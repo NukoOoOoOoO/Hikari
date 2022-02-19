@@ -27,28 +27,33 @@ int main()
             std::cout << "Uppercased: " << Hikari::String::Uppercase(example_string) << std::endl;
         }
 
-        auto target_process = Hikari::Process("csgo.exe");
-        std::cout << "ProcessSize: " << target_process.GetList().size() << std::endl;
-        target_process.Attach();
-        auto process_modules = target_process.GetModules_External();
-        std::cout << "ModuleList: " << process_modules.size() << std::endl;
-        for (auto&& mod : process_modules)
+        auto csgo_process = Hikari::Process("csgo.exe");
+        auto process_list = csgo_process.GetList();
+        std::cout << "ProcessSize: " << process_list.size() << std::endl;
+
+        if (!process_list.empty())
         {
-            auto name = mod.Name();
-            std::cout << "    " << name;
-
-            if (name == "client.dll" || name == "engine.dll")
+            csgo_process.Attach();
+            auto process_modules = csgo_process.GetModules_External();
+            std::cout << "ModuleList: " << process_modules.size() << std::endl;
+            for (auto&& mod : process_modules)
             {
-                auto segments = mod.Segments();
-                std::cout << " | segments.size(): " << segments.size() << ", segments.front().name: " << segments.front().name << ", segments.front().address: 0x" << std::hex
-                          << segments.front().address;
-                std::cout << ", segments.front().size: " << std::dec << segments.front().size;
+                auto name = mod.Name();
+                std::cout << "    " << name;
 
-                auto create_interface = mod.GetExport_External("CreateInterface");
-                std::cout << ", CreateInterface: 0x" << std::hex << create_interface << ", baseAddress: 0x" << mod.BaseAddress() << ", endAddress: 0x" << mod.BaseAddress() + mod.Size();
+                if (name == "client.dll" || name == "engine.dll")
+                {
+                    auto segments = mod.Segments();
+                    std::cout << " | segments.size(): " << segments.size() << ", segments.front().name: " << segments.front().name << ", segments.front().address: 0x" << std::hex
+                              << segments.front().address;
+                    std::cout << ", segments.front().size: " << std::dec << segments.front().size;
+
+                    auto create_interface = mod.GetExport_External("CreateInterface");
+                    std::cout << ", CreateInterface: 0x" << std::hex << create_interface << ", baseAddress: 0x" << mod.BaseAddress() << ", endAddress: 0x" << mod.BaseAddress() + mod.Size();
+                }
+
+                std::cout << std::endl;
             }
-
-            std::cout << std::endl;
         }
     }
     catch (std::exception& ex)
