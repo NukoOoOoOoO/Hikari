@@ -34,5 +34,6 @@
 #include <format>
 
 #include "String/String.h"
+#include "Address/Address.h"
 #include "ModuleInfo/ModuleInfo.h"
 #include "Process/Process.h"

@@ -36,6 +36,9 @@ int main()
             csgo_process.Attach();
             auto process_modules = csgo_process.GetModules_External();
             std::cout << "ModuleList: " << process_modules.size() << std::endl;
+
+            Hikari::ModuleInfo vguimatsurface;
+
             for (auto&& mod : process_modules)
             {
                 auto name = mod.Name();
@@ -51,9 +54,15 @@ int main()
                     auto create_interface = mod.GetExport_External("CreateInterface");
                     std::cout << ", CreateInterface: 0x" << std::hex << create_interface << ", baseAddress: 0x" << mod.BaseAddress() << ", endAddress: 0x" << mod.BaseAddress() + mod.Size();
                 }
+                else if(name == "vguimatsurface.dll")
+                {
+                    vguimatsurface = mod;
+                }
 
                 std::cout << std::endl;
             }
+
+            std::cout << vguimatsurface.Name() << ", baseAddress: 0x" << std::hex << vguimatsurface.BaseAddress() << std::endl;
         }
     }
     catch (std::exception& ex)
