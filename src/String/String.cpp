@@ -54,17 +54,27 @@ namespace Hikari::String
         return vec;
     }
 
-    std::string_view String::Lowercase(std::string& str)
+    std::string_view String::Lowercase(std::string str)
     {
         std::ranges::transform(str.begin(), str.end(), str.begin(), [](const unsigned char c) { return std::tolower(c); });
 
         return str;
     }
 
-    std::string_view String::Uppercase(std::string& str)
+    std::string_view String::Uppercase(std::string str)
     {
         std::ranges::transform(str.begin(), str.end(), str.begin(), [](const unsigned char c) { return std::toupper(c); });
 
         return str;
+    }
+
+    void String::Lowercase(std::string& str)
+    {
+        std::ranges::transform(str.begin(), str.end(), str.begin(), [](const unsigned char c) { return std::tolower(c); });
+    }
+
+    void String::Uppercase(std::string& str)
+    {
+        std::ranges::transform(str.begin(), str.end(), str.begin(), [](const unsigned char c) { return std::toupper(c); });
     }
 }

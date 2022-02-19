@@ -4,28 +4,28 @@
 
 namespace Hikari
 {
-    template < typename type = std::uintptr_t >
+    template <typename type = std::uintptr_t>
     struct AddressBase_t
     {
         type ptr;
 
-        AddressBase_t() : ptr{}
+        AddressBase_t() : ptr {}
         {
         }
 
-        AddressBase_t( type src ) : ptr{ src }
+        AddressBase_t(type src) : ptr { src }
         {
         }
 
-        AddressBase_t( type* src ) : ptr{ type( src ) }
+        AddressBase_t(type* src) : ptr { type(src) }
         {
         }
 
-        AddressBase_t( void* src ) : ptr{ type( src ) }
+        AddressBase_t(void* src) : ptr { type(src) }
         {
         }
 
-        AddressBase_t( const void* src ) : ptr{ type( src ) }
+        AddressBase_t(const void* src) : ptr { type(src) }
         {
         }
 
@@ -38,26 +38,26 @@ namespace Hikari
 
         operator void*() const
         {
-            return reinterpret_cast<void*>( ptr );
+            return reinterpret_cast<void*>(ptr);
         }
 
         bool IsValid()
         {
-            #ifdef ENVIRONMENT32
+#ifdef ENVIRONMENT32
             return ptr >= 0x1000 && ptr < 0xFFFFFFEF;
-            #else
+#else
             return ptr >= 0x1000 && ptr < 0x7FFFFFFEFFFF;
-            #endif
+#endif
         }
 
-        template < typename T = type >
+        template <typename T = type>
         T Cast()
         {
-            return T( ptr );
+            return T(ptr);
         }
 
-        template < typename T = AddressBase_t<type> >
-        T Relative( ptrdiff_t offset = 0x1 )
+        template <typename T = AddressBase_t<type>>
+        T Relative(ptrdiff_t offset = 0x1)
         {
             // An explanation about how to get the actual address from relative signatures in case you are pepega:
             // Let's take these lines of opcodes as example:
@@ -79,73 +79,73 @@ namespace Hikari
 
             // (1): This refers to the address where the given signature points to, you can think it as 0x100683D2 or 0x1400C2786 from the example
 
-            type base = ptr + offset;
-            const auto relative_address = *reinterpret_cast<std::int32_t*>( base );
-            base += sizeof( std::int32_t ) + relative_address;
+            type base                   = ptr + offset;
+            const auto relative_address = *reinterpret_cast<std::int32_t*>(base);
+            base += sizeof(std::int32_t) + relative_address;
 
-            return T( base );
+            return T(base);
         }
 
-        template < typename T = AddressBase_t<type> >
-        T SelfRelative( ptrdiff_t offset = 0x1 )
+        template <typename T = AddressBase_t<type>>
+        T SelfRelative(ptrdiff_t offset = 0x1)
         {
-            ptr = Relative( offset );
+            ptr = Relative(offset);
             return *this;
         }
 
-        template < typename T = AddressBase_t<type> >
-        T FindOpcode( std::uint8_t opcode, bool forward = true )
+        template <typename T = AddressBase_t<type>>
+        T FindOpcode(std::uint8_t opcode, bool forward = true)
         {
             auto base = ptr;
 
-            while ( true )
+            while (true)
             {
-                if ( const auto current_opcode = *reinterpret_cast<std::uint8_t*>( base ); current_opcode == opcode )
+                if (const auto current_opcode = *reinterpret_cast<std::uint8_t*>(base); current_opcode == opcode)
                     break;
 
                 forward ? ++base : --base;
             }
 
-            return T( base );
+            return T(base);
         }
 
-        template < typename T = AddressBase_t<type> >
-        T SelfFindOpcode( std::uint8_t opcode, bool forward = true )
+        template <typename T = AddressBase_t<type>>
+        T SelfFindOpcode(std::uint8_t opcode, bool forward = true)
         {
-            ptr = FindOpcode( opcode, forward );
+            ptr = FindOpcode(opcode, forward);
             return *this;
         }
 
-        template < typename T = AddressBase_t<type> >
-        T Dereference( uint8_t count = 1 )
+        template <typename T = AddressBase_t<type>>
+        T Dereference(uint8_t count = 1)
         {
             type base = ptr;
-            while ( count-- )
+            while (count--)
             {
-                if ( T( base ).IsValid() )
-                    base = *reinterpret_cast<type*>( base );
+                if (T(base).IsValid())
+                    base = *reinterpret_cast<type*>(base);
             }
 
-            return T( base );
+            return T(base);
         }
 
-        template < typename T = AddressBase_t<type> >
-        T SelfDereference( uint8_t count = 1 )
+        template <typename T = AddressBase_t<type>>
+        T SelfDereference(uint8_t count = 1)
         {
-            ptr = Dereference( count );
+            ptr = Dereference(count);
             return *this;
         }
 
-        template < typename T = AddressBase_t<type> >
-        T Offset( ptrdiff_t offset )
+        template <typename T = AddressBase_t<type>>
+        T Offset(ptrdiff_t offset)
         {
-            return T( ptr + offset );
+            return T(ptr + offset);
         }
 
-        template < typename T = AddressBase_t<type> >
-        T SelfOffset( ptrdiff_t offset )
+        template <typename T = AddressBase_t<type>>
+        T SelfOffset(ptrdiff_t offset)
         {
-            ptr = Offset( offset );
+            ptr = Offset(offset);
             return *this;
         }
     };

@@ -23,8 +23,12 @@ int main()
             }
             std::cout << std::endl;
 
-            std::cout << "Lowercased: " << Hikari::String::Lowercase(example_string) << std::endl;
-            std::cout << "Uppercased: " << Hikari::String::Uppercase(example_string) << std::endl;
+            // or do like this:
+            // auto lowercased = Hikari::String::Lowercase(example_string);
+            Hikari::String::Lowercase(example_string);
+            std::cout << "Lowercased: " << example_string << std::endl;
+            Hikari::String::Uppercase(example_string);
+            std::cout << "Uppercased: " << example_string << std::endl;
         }
 
         auto csgo_process = Hikari::Process("csgo.exe");
@@ -54,7 +58,7 @@ int main()
                     auto create_interface = mod.GetExport_External("CreateInterface");
                     std::cout << ", CreateInterface: 0x" << std::hex << create_interface << ", baseAddress: 0x" << mod.BaseAddress() << ", endAddress: 0x" << mod.BaseAddress() + mod.Size();
                 }
-                else if(name == "vguimatsurface.dll")
+                else if (name == "vguimatsurface.dll")
                 {
                     vguimatsurface = mod;
                 }
