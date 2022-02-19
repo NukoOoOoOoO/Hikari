@@ -15,9 +15,7 @@ namespace Hikari
 
         ModuleInfo() = default;
         ModuleInfo(const std::string& name);
-        ModuleInfo(const std::string& name, std::uintptr_t baseAddress, std::size_t size, void* handle);
-
-        void Get(const std::string& name);
+        ModuleInfo(const std::string& name, std::uintptr_t baseAddress, std::size_t size, void* handle, void* imageBytes);
 
         std::string Name();
         std::uintptr_t BaseAddress() const;
@@ -25,12 +23,20 @@ namespace Hikari
         std::size_t Size() const;
 
         void* GetExport(std::string_view name);
+        std::uintptr_t GetExport_External(std::string_view name);
 
     private:
+        void Get(const std::string& name);
+
         std::vector<Segment_t> _segments {};
         std::size_t _size {};
         std::uintptr_t _baseAddress {};
         std::string _name {};
+        void* _imageBytes {};
         void* _handle {};
+
+#ifdef WINDOWS
+        PIMAGE_NT_HEADERS _ntHeader;
+#endif
     };
 }

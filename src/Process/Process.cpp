@@ -82,7 +82,7 @@ namespace Hikari
                     const auto bytes = VirtualAlloc(nullptr, entry.modBaseSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
                     ReadProcessMemory(this->_handle, entry.modBaseAddr, bytes, entry.modBaseSize, nullptr);
 
-                    this->_modules.push_back(ModuleInfo(entry.szModule, reinterpret_cast<std::uintptr_t>(entry.modBaseAddr), entry.modBaseSize, static_cast<void*>(bytes)));
+                    this->_modules.push_back(ModuleInfo(entry.szModule, reinterpret_cast<std::uintptr_t>(entry.modBaseAddr), entry.modBaseSize, entry.hModule, static_cast<void*>(bytes)));
                 }
                 catch (const std::exception& e)
                 {

@@ -42,7 +42,10 @@ int main()
                 auto segments = mod.Segments();
                 std::cout << " | segments.size(): " << segments.size() << ", segments.front().name: " << segments.front().name << ", segments.front().address: 0x" << std::hex
                           << segments.front().address;
-                std::cout << ", segments.front().size: " << segments.front().size;
+                std::cout << ", segments.front().size: " << std::dec << segments.front().size;
+
+                auto create_interface = mod.GetExport_External("CreateInterface");
+                std::cout << ", CreateInterface: 0x" << std::hex << create_interface << ", baseAddress: 0x" << mod.BaseAddress() << ", endAddress: 0x" << mod.BaseAddress() + mod.Size();
             }
 
             std::cout << std::endl;
